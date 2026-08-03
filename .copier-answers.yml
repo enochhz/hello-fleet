@@ -1,0 +1,11 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY.
+# This records which agent-template version this repo was generated from,
+# so `copier update` can pull future changes as a 3-way merge.
+_commit: v0.0.18
+_src_path: gh:turingplanet/agent-template
+author_email: walkerhaozheng@gmail.com
+author_name: Turing Planet
+description: Pilot member for platform-hosted deployment (M5)
+project_name: hello-fleet
+project_slug: hello-fleet
+register_in_fleet: false
