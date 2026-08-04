@@ -1,0 +1,21 @@
+# Platform AI review trigger (RFC 002) — forwards /review comments to the
+# platform's reviewer service. Sends ONLY public metadata; the review runs
+# platform-side with the platform's credentials. Advisory only, quota'd by
+# the registry. Pilot copy — ships in agent-template v0.0.19 for everyone.
+name: platform-review
+on:
+  issue_comment:
+    types: [created]
+permissions: {}
+jobs:
+  forward:
+    if: github.event.issue.pull_request && startsWith(github.event.comment.body, '/review')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Forward to the reviewer service
+        env:
+          URL: https://fleet-services.agents.turingplanet.ai/api/review
+        run: |
+          curl -s --max-time 30 -X POST "$URL" -H 'Content-Type: application/json' \
+            -d "{\"repo\":\"${{ github.repository }}\",\"pr_number\":${{ github.event.issue.number }},\"comment_id\":${{ github.event.comment.id }}}" \
+            || echo "reviewer service unreachable — skipping quietly"
