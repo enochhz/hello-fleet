@@ -1,4 +1,4 @@
-"""/mcp_server — one process, two surfaces over the same /api logic.
+"""/mcp_server — one process, two surfaces over the same business logic.
 
   • MCP (for Claude)      → /mcp   (stdio locally; Streamable HTTP when deployed)
   • REST API (for humans) → /api   (FastAPI; only served in HTTP/deploy mode)
@@ -9,7 +9,6 @@ Local (stdio, MCP only):   poetry run python mcp_server/server.py
 Connect Claude:            claude mcp add hello-fleet -- poetry -C "$(pwd)" run python "$(pwd)/mcp_server/server.py"
 Deployed (HTTP, both):     platforms inject PORT → serves /mcp AND /api. Connect Claude with
                            claude mcp add --transport http hello-fleet https://<your-app>/mcp
-                           and hit the REST API at   https://<your-app>/api/say_hi
 
 (The folder is named mcp_server, NOT mcp, on purpose: a local `mcp/` package
 would collide with the installed `mcp` SDK and break imports.)
@@ -17,7 +16,7 @@ would collide with the installed `mcp` SDK and break imports.)
 import sys
 from pathlib import Path
 
-# Make /api and config.py importable no matter where the server is launched from.
+# Make your project modules and config.py importable no matter where the server is launched from.
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from mcp.server.fastmcp import FastMCP
