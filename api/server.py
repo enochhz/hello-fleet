@@ -10,7 +10,7 @@ def say_hi() -> str:
     """Working example: greet with the server's timezone and current time."""
     now = datetime.now().astimezone()
     tz = now.tzname() or "unknown timezone"
-    return f"hello from {tz} {now:%Y-%m-%d %H:%M:%S}: hi (auto-CD verified)"
+    return f"hello from {tz} {now:%Y-%m-%d %H:%M:%S}: hi"
 
 
 def run(payload: str = "ping") -> str:
