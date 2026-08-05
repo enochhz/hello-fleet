@@ -65,17 +65,33 @@ Everything configurable about the deployment (transport, port, model, which secr
 
 This agent can be tracked by the [fleet migration bot](https://github.com/turingplanet/agent-registry): when a new `agent-template` version ships, the bot opens a PR here bumping you to it (you review + merge — never auto-merged). **Two** things must be true:
 
-1. **You're listed in the fleet's `members.yaml`.** The scaffold offers to open that PR for you (the first Copier question). If you skipped it or lacked registry access, ask the platform admin to add:
+1. **You're listed in the fleet's `members.yaml`.** Your manifest carries `fleet.register` (set by the scaffold question) — when it's `true`, your first push to GitHub asks the platform to open the members.yaml PR for you; an admin merges. Flip the manifest key anytime. Manual fallback (`scripts/register-in-fleet.sh`), or ask the admin to add:
    ```yaml
    - name: hello-fleet
      repo: <owner>/hello-fleet
    ```
+<<<<<<< before updating
 2. **The bot's GitHub App can access this repo.** ⚠️ *Registration alone is NOT enough* — a GitHub App can't grant itself access; the **owner of this repo's account** grants it once:
+=======
+2. **The platform's GitHub App can access this repo.** ⚠️ *Registration alone is NOT enough* — a GitHub App can't grant itself access; the **owner of this repo's account** grants it once. This same one-time install also powers **platform AI reviews** (`/review` on your PRs — see below), so it's worth doing even if you don't care about template syncs:
+>>>>>>> after updating
    - GitHub → **Settings → Applications → Installed GitHub Apps → `turing-fleet-bot` → Configure**
    - Under **Repository access**: add this repo, **or** choose **All repositories** (simplest for a personal account — the bot only ever touches repos in `members.yaml`).
    - On an org you don't administer, ask the platform admin to grant it.
 
 > If a sync run fails with **"Not Found"** on your repo, it's always #2 — the App hasn't been granted access yet.
+
+## Free AI review on your PRs (platform-paid)
+
+Comment **`/review`** on any pull request in this repo and the platform's Claude posts a security review — paid for by the platform, **advisory only** (it never blocks; your gate decides).
+
+| command | what it does |
+| --- | --- |
+| `/review` | security review (the default) |
+| `/review perf` · `/review general` | other review lenses |
+| `/review help` | full list + your remaining weekly quota |
+
+Requirements: your repo is in `members.yaml` with a review allowance, and the platform App is installed (step 2 above). GitHub doesn't autocomplete third-party commands — just type it as a normal comment.
 
 ## How review works
 Open a pull request → the review flow from [`policies`](https://github.com/turingplanet/policies) reads the manifest, installs, runs the tests, lints, scans for security issues, lets the AI reviewer advise — and the **gate** (the hard checks) decides pass/fail. See the [platform overview](https://github.com/turingplanet/agent-legion) for the full picture.

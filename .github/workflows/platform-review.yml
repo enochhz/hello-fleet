@@ -1,7 +1,16 @@
+<<<<<<< before updating
 # Platform AI review trigger (RFC 002) — forwards /review comments to the
 # platform's reviewer service. Sends ONLY public metadata; the review runs
 # platform-side with the platform's credentials. Advisory only, quota'd by
 # the registry. Pilot copy — ships in agent-template v0.0.19 for everyone.
+=======
+# PLATFORM AI REVIEW TRIGGER (RFC 002). Forwards /review comments on PRs to the
+# platform's reviewer service. Sends ONLY public metadata (repo, PR number,
+# comment id) — the review runs platform-side with the platform's credentials.
+# Advisory only: it can never block your PR; your gate decides.
+# Commands: /review [security|perf|general|help]  (security is the default).
+# Quota per repo per week is set in the fleet registry (members.yaml).
+>>>>>>> after updating
 name: platform-review
 on:
   issue_comment:
