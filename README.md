@@ -2,7 +2,7 @@
 
 Pilot member for platform-hosted deployment (M5)
 
-A member agent of **图灵星球 Agent 军团**, generated from [agent-template](https://github.com/turingplanet/agent-template) with [Copier](https://copier.readthedocs.io). Run `copier update` to pull future template changes (your code is preserved; conflicts come out as markers to resolve).
+A member agent of **图灵星球 Agent 军团**, generated from [agent-template](https://github.com/turingplanet/agent-template) with [Copier](https://copier.readthedocs.io). Run `copier update --trust` to pull future template changes (your code is preserved; conflicts come out as markers to resolve).
 
 ## Setup checklist
 1. **Install & run locally** → [Run the MCP server](#run-the-mcp-server--connect-claude) (`poetry install`, connect Claude).

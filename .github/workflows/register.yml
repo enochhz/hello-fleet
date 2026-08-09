@@ -21,8 +21,9 @@ jobs:
             echo "fleet.register is not true — skipping."
             exit 0
           fi
-          curl -s --max-time 30 -X POST \
+          resp=$(curl -s --max-time 30 -X POST \
             https://fleet-services.agents.turingplanet.ai/api/register \
             -H 'Content-Type: application/json' \
             -d "{\"repo\":\"${{ github.repository }}\"}" \
-            || echo "registrar unreachable — will retry on the next push"
+            || echo '{"status":"registrar unreachable — will retry on the next push"}')
+          echo "registrar says: $resp"
