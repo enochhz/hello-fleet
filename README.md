@@ -2,7 +2,7 @@
 
 Pilot member for platform-hosted deployment (M5)
 
-A member agent of **图灵星球 Agent 军团**, generated from [agent-template](https://github.com/turingplanet/agent-template) with [Copier](https://copier.readthedocs.io). Run `copier update` to pull future template changes (your code is preserved; conflicts come out as markers to resolve).
+A member agent of **图灵星球 Agent 军团**, generated from [agent-template](https://github.com/turingplanet/agent-template) with [Copier](https://copier.readthedocs.io). Run `copier update --trust` to pull future template changes (your code is preserved; conflicts come out as markers to resolve).
 
 ## Setup checklist
 1. **Install & run locally** → [Run the MCP server](#run-the-mcp-server--connect-claude) (`poetry install`, connect Claude).
@@ -88,6 +88,22 @@ Comment **`/review`** on any pull request in this repo and the platform's Claude
 | `/review help` | full list + your remaining weekly quota |
 
 Requirements: your repo is in `members.yaml` with a review allowance, and the platform App is installed (step 2 above). GitHub doesn't autocomplete third-party commands — just type it as a normal comment.
+
+## Leaving (or deleting) — one script
+
+The mirror of joining. Interactive two questions, or flags for automation:
+
+```bash
+bash scripts/teardown.sh                # asks: delete repo entirely? / just leave the fleet?
+bash scripts/teardown.sh --unregister   # leave the fleet, keep the repo
+bash scripts/teardown.sh --delete-repo --yes   # full teardown, no prompts
+```
+
+Leaving flips `fleet.register: false` in your manifest (your consent — the
+platform verifies it) and asks the platform to open a registry PR removing your
+membership **and** any platform hosting; an admin merges, and hosting tears
+down automatically on that merge. Your code is never touched. Deleting the
+repo additionally needs `gh auth refresh -h github.com -s delete_repo` once.
 
 ## How review works
 Open a pull request → the review flow from [`policies`](https://github.com/turingplanet/policies) reads the manifest, installs, runs the tests, lints, scans for security issues, lets the AI reviewer advise — and the **gate** (the hard checks) decides pass/fail. See the [platform overview](https://github.com/turingplanet/agent-legion) for the full picture.
