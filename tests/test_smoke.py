@@ -25,3 +25,7 @@ def test_say_hi_format():
 def test_mcp_tools_delegate_to_api():
     assert tool_run("ping") == run("ping")
     assert tool_say_hi().endswith(": hi")
+
+
+def test_deliberately_broken():
+    assert 1 == 2, "planted for /fix-suggestion e2e"
