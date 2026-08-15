@@ -2,7 +2,7 @@
 
 Pilot member for platform-hosted deployment (M5)
 
-A member agent of **图灵星球 Agent 军团**, generated from [agent-template](https://github.com/turingplanet/agent-template) with [Copier](https://copier.readthedocs.io). Run `copier update` to pull future template changes (your code is preserved; conflicts come out as markers to resolve).
+A member agent of **图灵星球 Agent 军团**, generated from [agent-template](https://github.com/turingplanet/agent-template) with [Copier](https://copier.readthedocs.io). Run `copier update --trust` to pull future template changes (your code is preserved; conflicts come out as markers to resolve).
 
 ## Setup checklist
 1. **Install & run locally** → [Run the MCP server](#run-the-mcp-server--connect-claude) (`poetry install`, connect Claude).
@@ -61,11 +61,19 @@ Everything configurable about the deployment (transport, port, model, which secr
 
 > ⚠️ A deployed server is public: anyone with the URL can call your tools. Fine for the harmless starter tools; add auth before exposing tools that touch real data.
 
+### Or let the platform host it (zero-config)
+
+Fleet members can skip all of the above: open a PR adding this repo to the registry's `deployments.yaml` and, once an admin merges, the platform deploys it and serves it at `https://hello-fleet.agents.turingplanet.ai` — no Railway account, no DNS. Full walkthrough: [platform hosting](https://github.com/turingplanet/agent-legion/blob/main/e2e/05-platform-hosting.md). Verify it went live in one command:
+
+```bash
+bash scripts/test_platform_mcp.sh   # checks /api/health + a real MCP handshake + lists your tools
+```
+
 ## Fleet auto-sync (keep this repo on the latest template)
 
 This agent can be tracked by the [fleet migration bot](https://github.com/turingplanet/agent-registry): when a new `agent-template` version ships, the bot opens a PR here bumping you to it (you review + merge — never auto-merged). **Two** things must be true:
 
-1. **You're listed in the fleet's `members.yaml`.** Your manifest carries `fleet.register` (set by the scaffold question) — when it's `true`, your first push to GitHub asks the platform to open the members.yaml PR for you; an admin merges. Flip the manifest key anytime. Manual fallback (`scripts/register-in-fleet.sh`), or ask the admin to add:
+1. **You're listed in the fleet's `members.yaml`.** Your manifest carries `fleet.register` (set by the scaffold question) — when it's `true`, your first push to GitHub asks the platform to open the members.yaml PR for you; an admin merges. Flip the manifest key anytime (or comment `/register` on any PR). If all else fails, ask the admin to add:
    ```yaml
    - name: hello-fleet
      repo: <owner>/hello-fleet
@@ -88,6 +96,22 @@ Comment **`/review`** on any pull request in this repo and the platform's Claude
 | `/review help` | full list + your remaining weekly quota |
 
 Requirements: your repo is in `members.yaml` with a review allowance, and the platform App is installed (step 2 above). GitHub doesn't autocomplete third-party commands — just type it as a normal comment.
+
+## Leaving (or deleting) — one script
+
+The mirror of joining. Interactive two questions, or flags for automation:
+
+```bash
+bash scripts/teardown.sh                # asks: delete repo entirely? / just leave the fleet?
+bash scripts/teardown.sh --unregister   # leave the fleet, keep the repo
+bash scripts/teardown.sh --delete-repo --yes   # full teardown, no prompts
+```
+
+Leaving flips `fleet.register: false` in your manifest (your consent — the
+platform verifies it) and asks the platform to open a registry PR removing your
+membership **and** any platform hosting; an admin merges, and hosting tears
+down automatically on that merge. Your code is never touched. Deleting the
+repo additionally needs `gh auth refresh -h github.com -s delete_repo` once.
 
 ## How review works
 Open a pull request → the review flow from [`policies`](https://github.com/turingplanet/policies) reads the manifest, installs, runs the tests, lints, scans for security issues, lets the AI reviewer advise — and the **gate** (the hard checks) decides pass/fail. See the [platform overview](https://github.com/turingplanet/agent-legion) for the full picture.
